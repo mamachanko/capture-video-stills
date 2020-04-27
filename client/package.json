@@ -1,0 +1,16 @@
+{
+  "main": "index.html",
+  "scripts": {
+    "start": "node dev-server.js",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.3",
+    "parcel": "^1.12.4"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.6.1",
+    "typescript": "^3.8.3"
+  }
+}

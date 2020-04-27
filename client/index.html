@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+  </head>
+
+  <style>
+    .center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+  </style>
+  <body class="center">
+    <div class="center">
+      the captured image served by the API
+      <img id="img">
+    </div>
+
+    <div class="center">
+      the video
+      <video id="video" controls muted autoplay>
+        <source src="./jamaican-bowlers.ogv" type="video/ogg" />
+      </video>
+    </div>
+
+    <div class="center">
+      the captured image
+      <button id="button">capture</button>
+      <div id="capture" class="center"></div>
+    </div>
+
+    <script src="src/index.ts"></script>
+  </body>
+</html>
