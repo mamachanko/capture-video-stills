@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/video-stills
+    password: s3cr3tz
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
