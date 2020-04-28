@@ -20,10 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Types;
+import java.time.Duration;
+import java.time.Instant;
 
 @SpringBootApplication
 @Log4j2
@@ -61,23 +60,28 @@ class ApiController {
 
     @GetMapping(value = "/api/image.png", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity getImage() {
-        InputStream imageStream = namedParameterJdbcTemplate.query("select id, data from image order by id desc;", resultSet -> {
-            resultSet.next();
-            return resultSet.getBinaryStream(2);
-        });
-
-        return ResponseEntity.ok(new InputStreamResource(imageStream));
+        return ResponseEntity.ok(new InputStreamResource(readImageFromDb()));
     }
 
     @PostMapping("/api/images")
     public void saveImage(MultipartFile file) throws IOException {
         log.info("saving image into db ...");
+        Instant startTime = Instant.now();
+        writeImageToDb(file);
+        long timeSpentMs = Duration.between(startTime, Instant.now()).toMillis();
+        log.info("done in {}ms", timeSpentMs);
+    }
+
+    private InputStream readImageFromDb() {
+        return namedParameterJdbcTemplate.query("select id, data from image order by id desc;", resultSet -> {
+            resultSet.next();
+            return resultSet.getBinaryStream(2);
+        });
+    }
+
+    private void writeImageToDb(MultipartFile file) throws IOException {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("imageBlob", new SqlLobValue(file.getInputStream(), ((int) file.getSize()), new DefaultLobHandler()), Types.BLOB);
-        long startTime = System.nanoTime();
         namedParameterJdbcTemplate.update("insert into image(data) values (:imageBlob)", parameters);
-        long endTime = System.nanoTime();
-        long timeElapsed = endTime - startTime;
-        log.info("done in {}ms", timeElapsed / 1000000);
     }
 }
